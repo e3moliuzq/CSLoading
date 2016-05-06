@@ -62,12 +62,17 @@ static LoadingViewController *_sharedViewController = nil;
         [small_loading_view setCenter:center];
     }
     else {
-        CGSize winsize = [[UIScreen mainScreen] bounds].size;
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-            [small_loading_view setCenter:CGPointMake(winsize.width/2, 5*winsize.height/6)];
+        if (view) {
+            [small_loading_view setCenter:CGPointMake(view.frame.size.width/2, 5*view.frame.size.height/6)];
         }
         else {
-            [small_loading_view setCenter:CGPointMake(winsize.width/2, 5*(winsize.height-64)/6)];
+            CGSize winsize = [[UIScreen mainScreen] bounds].size;
+            if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+                [small_loading_view setCenter:CGPointMake(winsize.width/2, 5*winsize.height/6)];
+            }
+            else {
+                [small_loading_view setCenter:CGPointMake(winsize.width/2, 5*(winsize.height-64)/6)];
+            }
         }
     }
     
@@ -92,6 +97,9 @@ static LoadingViewController *_sharedViewController = nil;
     
     CGSize winsize = [[UIScreen mainScreen] bounds].size;
     full_loading_view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, winsize.width, winsize.height)];
+    if (view) {
+        full_loading_view.frame = CGRectMake(0, 0, view.frame.size.width, view.frame.size.height);
+    }
     [full_loading_view setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.3]];
     
     UIView *base_view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SYS_UI_SCALE_WIDTH_SIZE(100), SYS_UI_SCALE_WIDTH_SIZE(100))];
@@ -162,12 +170,17 @@ static LoadingViewController *_sharedViewController = nil;
         [delay_tips_view setCenter:center];
     }
     else {
-        CGSize winsize = [[UIScreen mainScreen] bounds].size;
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-            [delay_tips_view setCenter:CGPointMake(winsize.width/2, 5*winsize.height/6)];
+        if (view) {
+            [delay_tips_view setCenter:CGPointMake(view.frame.size.width/2, 5*view.frame.size.height/6)];
         }
         else {
-            [delay_tips_view setCenter:CGPointMake(winsize.width/2, 5*(winsize.height-64)/6)];
+            CGSize winsize = [[UIScreen mainScreen] bounds].size;
+            if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+                [delay_tips_view setCenter:CGPointMake(winsize.width/2, 5*winsize.height/6)];
+            }
+            else {
+                [delay_tips_view setCenter:CGPointMake(winsize.width/2, 5*(winsize.height-64)/6)];
+            }
         }
     }
     
@@ -189,12 +202,125 @@ static LoadingViewController *_sharedViewController = nil;
     }
 }
 
-- (void)showProgressLoadingWithCount:(int)count view:(UIView*)view auto:(BOOL)isAuto {
+- (void)showProgressLoadingWithMode:(int)mode text:(NSString*)text view:(UIView*)view count:(int)count {
+    progress_mode = mode;
+    progress_count = count;
+    if (progress_count < 0) {
+        progress_count = 0;
+    }
     
+    CGSize winsize = [[UIScreen mainScreen] bounds].size;
+    progress_loading_view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, winsize.width, winsize.height)];
+    if (view) {
+        progress_loading_view.frame = CGRectMake(0, 0, view.frame.size.width, view.frame.size.height);
+    }
+    [progress_loading_view setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.3]];
+    
+    
+    float base_height = SYS_UI_SCALE_WIDTH_SIZE(105);
+    if (progress_mode == 2) {
+        base_height -= SYS_UI_SCALE_WIDTH_SIZE(25);
+    }
+    UIView *base_view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, progress_loading_view.frame.size.width/3*2, base_height)];
+    [base_view setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.8]];
+    //不能和加阴影同时使用
+    base_view.layer.masksToBounds = YES;
+    base_view.layer.cornerRadius = SYS_UI_SCALE_WIDTH_SIZE(10);//如果圆角为一半，则可以截成圆形
+    [base_view setCenter:CGPointMake(progress_loading_view.frame.size.width/2, progress_loading_view.frame.size.height/2)];
+    base_view.tag = 999;
+    [progress_loading_view addSubview:base_view];
+    
+    UILabel *title_label = [[UILabel alloc] initWithFrame:CGRectMake(0, SYS_UI_SCALE_WIDTH_SIZE(15), base_view.frame.size.width, SYS_UI_SCALE_WIDTH_SIZE(20))];
+    [title_label setText:text];
+    [title_label setTextColor:[UIColor whiteColor]];
+    [title_label setTextAlignment:NSTextAlignmentCenter];
+    [title_label setFont:[UIFont boldSystemFontOfSize:SYS_UI_SCALE_WIDTH_SIZE(15)]];
+    [title_label setBackgroundColor:[UIColor clearColor]];
+    title_label.tag = 1000;
+    [base_view addSubview:title_label];
+    
+    if (mode != 2) {
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, SYS_UI_SCALE_WIDTH_SIZE(45), base_view.frame.size.width, SYS_UI_SCALE_WIDTH_SIZE(20))];
+        if (mode == 1) {
+            if (progress_count == 0) {
+                [label setText:@"100 %"];
+            }
+            else {
+                [label setText:@"0 %"];
+            }
+        }
+        else {
+            [label setText:[NSString stringWithFormat:@"0 / %d",count]];
+        }
+        [label setTextColor:[UIColor whiteColor]];
+        [label setTextAlignment:NSTextAlignmentCenter];
+        [label setFont:[UIFont systemFontOfSize:SYS_UI_SCALE_WIDTH_SIZE(14)]];
+        [label setBackgroundColor:[UIColor clearColor]];
+        label.tag = 1001;
+        [base_view addSubview:label];
+    }
+    
+    UIProgressView *pro_view = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
+    CGRect frame = pro_view.frame;
+    frame.size.width = base_view.frame.size.width/5*4;
+    pro_view.frame = frame;
+    [pro_view setCenter:CGPointMake(base_view.frame.size.width/2, base_view.frame.size.height-SYS_UI_SCALE_WIDTH_SIZE(25))];
+    if (progress_count == 0) {
+        pro_view.progress = 1;
+    }
+    else {
+        pro_view.progress = 0;
+    }
+    pro_view.progressTintColor = [UIColor greenColor];
+    pro_view.trackTintColor = [UIColor grayColor];
+    pro_view.tag = 1002;
+    [base_view addSubview:pro_view];
+    
+    CGAffineTransform transform = CGAffineTransformMakeScale(1.0f, 3.0f);
+    pro_view.transform = transform;
+    //不能和加阴影同时使用
+    pro_view.layer.masksToBounds = YES;
+    pro_view.layer.cornerRadius = 3.f;//如果圆角为一半，则可以截成圆形
+    
+    
+    if (view) {
+        [view addSubview:progress_loading_view];
+    }
+    else {
+        AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [[app window] addSubview:progress_loading_view];
+    }
 }
 
-- (void)changeProgressLoadingIndex:(int)index {
-    
+- (void)changeProgressLoadingIndex:(int)index text:(NSString *)text {
+    if (progress_loading_view) {
+        UIView *base_view = (UIView*)[progress_loading_view viewWithTag:999];
+        
+        if (text && text.length > 0) {
+            UILabel *title_label = (UILabel*)[base_view viewWithTag:1000];
+            [title_label setText:text];
+        }
+        
+        if (index >= 0) {
+            UIProgressView *pro_view = (UIProgressView*)[base_view viewWithTag:1002];
+            if (index >= progress_count) {
+                index = progress_count;
+            }
+            
+            float percent = (float)index/(float)progress_count;
+            pro_view.progress = percent;
+            
+            if (progress_mode != 2) {
+                UILabel *label = (UILabel*)[base_view viewWithTag:1001];
+                if (progress_mode == 1) {
+                    [label setText:[NSString stringWithFormat:@"%.2f %%",percent*100.f]];
+                }
+                else {
+                    [label setText:[NSString stringWithFormat:@"%d / %d",index,progress_count]];
+                }
+            }
+        }
+    }
 }
 
 - (void)hideProgressLoading {

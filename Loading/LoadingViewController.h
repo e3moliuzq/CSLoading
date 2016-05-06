@@ -13,6 +13,8 @@
     UIView *full_loading_view;
     UIView *delay_tips_view;
     UIView *progress_loading_view;
+    int progress_mode;
+    int progress_count;
 }
 
 + (LoadingViewController *)sharedViewController;
@@ -45,8 +47,21 @@
  */
 - (void)showDelayTipsWithCenter:(CGPoint)center text:(NSString*)text view:(UIView*)view delay:(float)delay;
 
-- (void)showProgressLoadingWithCount:(int)count view:(UIView*)view auto:(BOOL)isAuto;//loading进度条，未完成
-- (void)changeProgressLoadingIndex:(int)index;//loading进度条进度调整，未完成
+/**
+ 进度条loading，会阻碍loading覆盖的所有操作
+ mode：显示模式，mode == 2时无进度文字，mode == 1时进度条上方会有"2.23 %"样式的进度文字，mode == 0时进度条上会有"1 / 20"样式的进度文字
+ text：显示文字，不能换行，文字大小自适应
+ view：显示的view，可不传，不传时为window添加
+ count：进度的基数，必须大于0，不然进度会保持100%不变
+ */
+- (void)showProgressLoadingWithMode:(int)mode text:(NSString*)text view:(UIView*)view count:(int)count;
+/**
+ 进度条loading进度调整方法
+ index：范围为0~进度的基数，小于0时进度不会变化，只改变text时index传-1
+ text：改变进度文字，可为空
+ */
+- (void)changeProgressLoadingIndex:(int)index text:(NSString*)text;
+
 - (void)hideLoading;//移除loading
 
 @end
