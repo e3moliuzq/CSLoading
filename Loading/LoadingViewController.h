@@ -35,8 +35,10 @@
  全屏loading，会阻碍loading覆盖的所有操作
  text：显示文字，不能换行，文字大小自适应
  view：显示的view，可不传，不传时为window添加
+ alpha:阻挡层透明度
  */
 - (void)showFullLoadingWithText:(NSString*)text view:(UIView*)view;
+- (void)showFullLoadingWithText:(NSString*)text view:(UIView*)view alpha:(float)alpha;
 
 /**
  提示消息，不会阻碍其他操作

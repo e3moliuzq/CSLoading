@@ -52,7 +52,7 @@ static LoadingViewController *_sharedViewController = nil;
     [label setText:text];
     [label setTextColor:[UIColor whiteColor]];
     [label setTextAlignment:NSTextAlignmentCenter];
-    [label setFont:[UIFont systemFontOfSize:SYS_UI_SCALE_WIDTH_SIZE(12)]];
+    [label setFont:SYS_UI_FONT_NORMAL(SYS_UI_SCALE_WIDTH_SIZE(12))];
     [label setBackgroundColor:[UIColor clearColor]];
     [label sizeToFit];
     [small_loading_view addSubview:label];
@@ -92,7 +92,11 @@ static LoadingViewController *_sharedViewController = nil;
     }
 }
 
-- (void)showFullLoadingWithText:(NSString *)text view:(UIView*)view{
+- (void)showFullLoadingWithText:(NSString *)text view:(UIView*)view {
+    [self showFullLoadingWithText:text view:view alpha:0.2];
+}
+
+- (void)showFullLoadingWithText:(NSString *)text view:(UIView*)view alpha:(float)alpha {
     [self hideLoading];
     
     CGSize winsize = [[UIScreen mainScreen] bounds].size;
@@ -100,7 +104,7 @@ static LoadingViewController *_sharedViewController = nil;
     if (view) {
         full_loading_view.frame = CGRectMake(0, 0, view.frame.size.width, view.frame.size.height);
     }
-    [full_loading_view setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.3]];
+    [full_loading_view setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:alpha]];
     
     UIView *base_view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SYS_UI_SCALE_WIDTH_SIZE(100), SYS_UI_SCALE_WIDTH_SIZE(100))];
     [base_view setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.8]];
@@ -124,7 +128,7 @@ static LoadingViewController *_sharedViewController = nil;
     [label setText:text];
     [label setTextColor:[UIColor whiteColor]];
     [label setTextAlignment:NSTextAlignmentCenter];
-    [label setFont:[UIFont systemFontOfSize:SYS_UI_SCALE_WIDTH_SIZE(12)]];
+    [label setFont:SYS_UI_FONT_NORMAL(SYS_UI_SCALE_WIDTH_SIZE(12))];
     [label setBackgroundColor:[UIColor clearColor]];
     [label sizeToFit];
     [label setCenter:CGPointMake(base_view.frame.size.width/2, base_view.frame.size.height-SYS_UI_SCALE_WIDTH_SIZE(20))];
@@ -160,7 +164,7 @@ static LoadingViewController *_sharedViewController = nil;
     [label setText:text];
     [label setTextColor:[UIColor whiteColor]];
     [label setTextAlignment:NSTextAlignmentCenter];
-    [label setFont:[UIFont systemFontOfSize:SYS_UI_SCALE_WIDTH_SIZE(12)]];
+    [label setFont:SYS_UI_FONT_NORMAL(SYS_UI_SCALE_WIDTH_SIZE(12))];
     [label setBackgroundColor:[UIColor clearColor]];
     [label sizeToFit];
     [delay_tips_view addSubview:label];
@@ -214,7 +218,7 @@ static LoadingViewController *_sharedViewController = nil;
     if (view) {
         progress_loading_view.frame = CGRectMake(0, 0, view.frame.size.width, view.frame.size.height);
     }
-    [progress_loading_view setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.3]];
+    [progress_loading_view setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]];
     
     
     float base_height = SYS_UI_SCALE_WIDTH_SIZE(105);
@@ -234,7 +238,7 @@ static LoadingViewController *_sharedViewController = nil;
     [title_label setText:text];
     [title_label setTextColor:[UIColor whiteColor]];
     [title_label setTextAlignment:NSTextAlignmentCenter];
-    [title_label setFont:[UIFont boldSystemFontOfSize:SYS_UI_SCALE_WIDTH_SIZE(15)]];
+    [title_label setFont:SYS_UI_FONT_BOLD(SYS_UI_SCALE_WIDTH_SIZE(15))];
     [title_label setBackgroundColor:[UIColor clearColor]];
     title_label.tag = 1000;
     [base_view addSubview:title_label];
@@ -254,7 +258,7 @@ static LoadingViewController *_sharedViewController = nil;
         }
         [label setTextColor:[UIColor whiteColor]];
         [label setTextAlignment:NSTextAlignmentCenter];
-        [label setFont:[UIFont systemFontOfSize:SYS_UI_SCALE_WIDTH_SIZE(14)]];
+        [label setFont:SYS_UI_FONT_NORMAL(SYS_UI_SCALE_WIDTH_SIZE(14))];
         [label setBackgroundColor:[UIColor clearColor]];
         label.tag = 1001;
         [base_view addSubview:label];
