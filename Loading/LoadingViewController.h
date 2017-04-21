@@ -11,16 +11,19 @@
 @interface LoadingViewController : UIViewController {
     UIView *small_loading_view;
     UIView *full_loading_view;
-    UIView *delay_tips_view;
+    
     UIView *progress_loading_view;
     int progress_mode;
     int progress_count;
+    
+    UIView *delay_tips_view;
+    int delay_count;
 }
 
 + (LoadingViewController *)sharedViewController;
 
 /**
- 只能同时出现一个
+ 如果使用sharedViewController，则只能同时出现一个
  */
 
 /**
@@ -40,14 +43,6 @@
 - (void)showFullLoadingWithText:(NSString*)text view:(UIView*)view;
 - (void)showFullLoadingWithText:(NSString*)text view:(UIView*)view alpha:(float)alpha;
 
-/**
- 提示消息，不会阻碍其他操作
- center：传入CGPointZero为默认位置，也可传值设定位置
- text：显示文字，不能换行，文字大小自适应
- view：显示的view，可不传，不传时为window添加
- delay:移除时间
- */
-- (void)showDelayTipsWithCenter:(CGPoint)center text:(NSString*)text view:(UIView*)view delay:(float)delay;
 
 /**
  进度条loading，会阻碍loading覆盖的所有操作
@@ -64,6 +59,19 @@
  */
 - (void)changeProgressLoadingIndex:(int)index text:(NSString*)text;
 
+
+/**
+ 提示消息，不会阻碍其他操作
+ center：传入CGPointZero为默认位置，也可传值设定位置
+ text：显示文字，不能换行，文字大小自适应
+ view：显示的view，可不传，不传时为window添加
+ delay:移除时间
+ */
+- (void)showDelayTipsWithCenter:(CGPoint)center text:(NSString*)text view:(UIView*)view delay:(float)delay;
+
+
 - (void)hideLoading;//移除loading
+
+
 
 @end

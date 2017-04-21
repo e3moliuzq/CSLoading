@@ -31,7 +31,7 @@ static LoadingViewController *_sharedViewController = nil;
 {
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
-        
+        delay_count = 0;
     }
     
     return self;
@@ -52,7 +52,7 @@ static LoadingViewController *_sharedViewController = nil;
     [label setText:text];
     [label setTextColor:[UIColor whiteColor]];
     [label setTextAlignment:NSTextAlignmentCenter];
-    [label setFont:SYS_UI_FONT_NORMAL(SYS_UI_SCALE_WIDTH_SIZE(12))];
+    [label setFont:[UIFont systemFontOfSize:SYS_UI_SCALE_WIDTH_SIZE(12)]];
     [label setBackgroundColor:[UIColor clearColor]];
     [label sizeToFit];
     [small_loading_view addSubview:label];
@@ -128,7 +128,7 @@ static LoadingViewController *_sharedViewController = nil;
     [label setText:text];
     [label setTextColor:[UIColor whiteColor]];
     [label setTextAlignment:NSTextAlignmentCenter];
-    [label setFont:SYS_UI_FONT_NORMAL(SYS_UI_SCALE_WIDTH_SIZE(12))];
+    [label setFont:[UIFont systemFontOfSize:SYS_UI_SCALE_WIDTH_SIZE(12)]];
     [label setBackgroundColor:[UIColor clearColor]];
     [label sizeToFit];
     [label setCenter:CGPointMake(base_view.frame.size.width/2, base_view.frame.size.height-SYS_UI_SCALE_WIDTH_SIZE(20))];
@@ -147,62 +147,6 @@ static LoadingViewController *_sharedViewController = nil;
     if (full_loading_view) {
         [full_loading_view removeFromSuperview];
         full_loading_view = nil;
-    }
-}
-
-- (void)showDelayTipsWithCenter:(CGPoint)center text:(NSString *)text view:(UIView *)view delay:(float)delay {
-    [self hideLoading];
-    
-    delay_tips_view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, SYS_UI_SCALE_WIDTH_SIZE(25))];
-    [delay_tips_view setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.8]];
-    //不能和加阴影同时使用
-    delay_tips_view.layer.masksToBounds = YES;
-    delay_tips_view.layer.cornerRadius = 5;//如果圆角为一半，则可以截成圆形
-    
-    
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(SYS_UI_SCALE_WIDTH_SIZE(10), SYS_UI_SCALE_WIDTH_SIZE(5), 0, SYS_UI_SCALE_WIDTH_SIZE(15))];
-    [label setText:text];
-    [label setTextColor:[UIColor whiteColor]];
-    [label setTextAlignment:NSTextAlignmentCenter];
-    [label setFont:SYS_UI_FONT_NORMAL(SYS_UI_SCALE_WIDTH_SIZE(12))];
-    [label setBackgroundColor:[UIColor clearColor]];
-    [label sizeToFit];
-    [delay_tips_view addSubview:label];
-    
-    delay_tips_view.frame = CGRectMake(0, 0, label.frame.size.width+SYS_UI_SCALE_WIDTH_SIZE(20), SYS_UI_SCALE_WIDTH_SIZE(25));
-    if (center.x > 0 && center.y > 0) {
-        [delay_tips_view setCenter:center];
-    }
-    else {
-        if (view) {
-            [delay_tips_view setCenter:CGPointMake(view.frame.size.width/2, 5*view.frame.size.height/6)];
-        }
-        else {
-            CGSize winsize = [[UIScreen mainScreen] bounds].size;
-            if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-                [delay_tips_view setCenter:CGPointMake(winsize.width/2, 5*winsize.height/6)];
-            }
-            else {
-                [delay_tips_view setCenter:CGPointMake(winsize.width/2, 5*(winsize.height-64)/6)];
-            }
-        }
-    }
-    
-    if (view) {
-        [view addSubview:delay_tips_view];
-    }
-    else {
-        AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [[app window] addSubview:delay_tips_view];
-    }
-    
-    [self performSelector:@selector(hideDelayTips) withObject:nil afterDelay:delay];
-}
-
-- (void)hideDelayTips {
-    if (delay_tips_view) {
-        [delay_tips_view removeFromSuperview];
-        delay_tips_view = nil;
     }
 }
 
@@ -238,7 +182,7 @@ static LoadingViewController *_sharedViewController = nil;
     [title_label setText:text];
     [title_label setTextColor:[UIColor whiteColor]];
     [title_label setTextAlignment:NSTextAlignmentCenter];
-    [title_label setFont:SYS_UI_FONT_BOLD(SYS_UI_SCALE_WIDTH_SIZE(15))];
+    [title_label setFont:[UIFont boldSystemFontOfSize:SYS_UI_SCALE_WIDTH_SIZE(15)]];
     [title_label setBackgroundColor:[UIColor clearColor]];
     title_label.tag = 1000;
     [base_view addSubview:title_label];
@@ -258,7 +202,7 @@ static LoadingViewController *_sharedViewController = nil;
         }
         [label setTextColor:[UIColor whiteColor]];
         [label setTextAlignment:NSTextAlignmentCenter];
-        [label setFont:SYS_UI_FONT_NORMAL(SYS_UI_SCALE_WIDTH_SIZE(14))];
+        [label setFont:[UIFont systemFontOfSize:SYS_UI_SCALE_WIDTH_SIZE(14)]];
         [label setBackgroundColor:[UIColor clearColor]];
         label.tag = 1001;
         [base_view addSubview:label];
@@ -339,6 +283,80 @@ static LoadingViewController *_sharedViewController = nil;
     [self hideFullLoading];
     [self hideDelayTips];
     [self hideProgressLoading];
+}
+
+- (void)showDelayTipsWithCenter:(CGPoint)center text:(NSString *)text view:(UIView *)view delay:(float)delay {
+    [self hideLoading];
+    
+    delay_tips_view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, SYS_UI_SCALE_WIDTH_SIZE(25))];
+    [delay_tips_view setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.8]];
+    delay_tips_view.tag = delay_count;
+    //不能和加阴影同时使用
+    delay_tips_view.layer.masksToBounds = YES;
+    delay_tips_view.layer.cornerRadius = 5;//如果圆角为一半，则可以截成圆形
+    
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(SYS_UI_SCALE_WIDTH_SIZE(10), SYS_UI_SCALE_WIDTH_SIZE(5), 0, SYS_UI_SCALE_WIDTH_SIZE(15))];
+    [label setText:text];
+    [label setTextColor:[UIColor whiteColor]];
+    [label setTextAlignment:NSTextAlignmentCenter];
+    [label setFont:[UIFont systemFontOfSize:SYS_UI_SCALE_WIDTH_SIZE(12)]];
+    [label setBackgroundColor:[UIColor clearColor]];
+    [label sizeToFit];
+    [delay_tips_view addSubview:label];
+    
+    delay_tips_view.frame = CGRectMake(0, 0, label.frame.size.width+SYS_UI_SCALE_WIDTH_SIZE(20), SYS_UI_SCALE_WIDTH_SIZE(25));
+    if (center.x > 0 && center.y > 0) {
+        [delay_tips_view setCenter:center];
+    }
+    else {
+        if (view) {
+            [delay_tips_view setCenter:CGPointMake(view.frame.size.width/2, 5*view.frame.size.height/6)];
+        }
+        else {
+            CGSize winsize = [[UIScreen mainScreen] bounds].size;
+            if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+                [delay_tips_view setCenter:CGPointMake(winsize.width/2, 5*winsize.height/6)];
+            }
+            else {
+                [delay_tips_view setCenter:CGPointMake(winsize.width/2, 5*(winsize.height-64)/6)];
+            }
+        }
+    }
+    
+    if (view) {
+        [view addSubview:delay_tips_view];
+    }
+    else {
+        AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [[app window] addSubview:delay_tips_view];
+    }
+    
+    NSDictionary *dict = @{@"count":[NSString stringWithFormat:@"%d",delay_count]};
+    
+    delay_count ++;
+    if (delay_count > 100) {
+        delay_count = 0;
+    }
+    
+    [self performSelector:@selector(delayHide:) withObject:dict afterDelay:delay];
+}
+
+- (void)delayHide:(NSDictionary*)dict {
+    int count = [[dict objectForKey:@"count"] intValue];
+    if (delay_tips_view) {
+        if (delay_tips_view.tag == count) {
+            [delay_tips_view removeFromSuperview];
+            delay_tips_view = nil;
+        }
+    }
+}
+
+- (void)hideDelayTips {
+    if (delay_tips_view) {
+        [delay_tips_view removeFromSuperview];
+        delay_tips_view = nil;
+    }
 }
 
 
