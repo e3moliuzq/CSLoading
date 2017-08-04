@@ -1,23 +1,24 @@
 //
-//  ViewController.m
+//  TestViewController.m
 //  CSLoading
 //
-//  Created by e3mo on 16/5/5.
-//  Copyright © 2016年 e3mo. All rights reserved.
+//  Created by e3mo on 2017/5/5.
+//  Copyright © 2017年 e3mo. All rights reserved.
 //
 
-#import "ViewController.h"
+#import "TestViewController.h"
 #import "LoadingViewController.h"
 #import "CSNavigationViewController.h"
-#import "TestViewController.h"
 
-@interface ViewController () {
+@interface TestViewController () {
+    
     int pro_index;
     int navi_pro_index;
 }
+
 @end
 
-@implementation ViewController
+@implementation TestViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -28,7 +29,16 @@
     
     UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(rightAction)];
     right.tintColor = [UIColor whiteColor];
-    [self.navigationItem setRightBarButtonItem:right];
+    
+    UIBarButtonItem *right1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(rightAction)];
+    right1.tintColor = [UIColor whiteColor];
+    UIBarButtonItem *right2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(rightAction)];
+    right2.tintColor = [UIColor whiteColor];
+    UIBarButtonItem *right3 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(rightAction)];
+    right3.tintColor = [UIColor whiteColor];
+    
+    
+    [self.navigationItem setRightBarButtonItems:[NSArray arrayWithObjects: right, right1, right2, right3, nil]];
     
     
     UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -129,11 +139,8 @@
 }
 
 - (void)rightAction {
-//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"测试" message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-//    [alert show];
-
-    TestViewController *controller = [[TestViewController alloc] init];
-    [self.navigationController pushViewController:controller animated:YES];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"测试" message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alert show];
 }
 
 - (void)naviTips {
@@ -247,6 +254,5 @@
     
     [self performSelector:@selector(proIndexAdd) withObject:nil afterDelay:0.5];
 }
-
 
 @end

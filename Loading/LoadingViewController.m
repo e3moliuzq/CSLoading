@@ -151,6 +151,8 @@ static LoadingViewController *_sharedViewController = nil;
 }
 
 - (void)showProgressLoadingWithMode:(int)mode text:(NSString*)text view:(UIView*)view count:(int)count {
+    [self hideLoading];
+    
     progress_mode = mode;
     progress_count = count;
     if (progress_count < 0) {
@@ -256,7 +258,7 @@ static LoadingViewController *_sharedViewController = nil;
             }
             
             float percent = (float)index/(float)progress_count;
-            pro_view.progress = percent;
+            [pro_view setProgress:percent animated:YES];
             
             if (progress_mode != 2) {
                 UILabel *label = (UILabel*)[base_view viewWithTag:1001];
