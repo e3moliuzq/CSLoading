@@ -12,7 +12,7 @@
 #define DEFAULT_TIPS_BG_COLOR       [UIColor colorWithRed:1 green:0.303 blue:0.303 alpha:1]
 #define DEFAULT_TIPS_TEXT_COLOR     [UIColor whiteColor]
 
-@interface CSNavigationViewController () {
+@interface CSNavigationViewController () <UIGestureRecognizerDelegate> {
     UIColor *bg_color;
     UIColor *title_color;
     UIFont *title_font;
@@ -34,8 +34,39 @@
     
 }
 
+- (BOOL)shouldAutorotate {
+    return YES;
+}
+
+// 设备支持方向
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskPortrait;
+}
+// 默认方向
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+    return UIInterfaceOrientationPortrait;
+}
+
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return style;
+}
+
+- (id)initWithRootViewController:(UIViewController *)rootViewController {
+    if ([super initWithRootViewController:rootViewController]) {
+        if ([self respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+            self.interactivePopGestureRecognizer.enabled = YES;
+            self.interactivePopGestureRecognizer.delegate = self;
+        }
+    }
+    return self;
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    if ([gestureRecognizer isEqual:self.interactivePopGestureRecognizer] && [self.viewControllers count]==1) {
+        return NO;
+    } else {
+        return YES;
+    }
 }
 
 - (void)viewDidLoad {
@@ -46,7 +77,7 @@
     }
     tips_count = 0;
     
-    self.navigationBar.translucent = NO;
+    self.navigationBar.translucent = NO;//打开这个的时候位置起始都是0，没有这条的话起始位置是0和64
     
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
         self.navigationBar.barTintColor = bg_color;
